@@ -1,0 +1,55 @@
+server:
+  port: 9002
+spring:
+  application:
+    name: advertisement-service
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/olx_advertise
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    username: root
+#    password: root
+#  jpa:
+#   hibernate.ddl-auto: update
+#   properties:
+#     hibernate:
+#        dialect: org.hibernate.dialect.MySQL8Dialect    
+  config:
+    import:
+     configserver:http://localhost:8888
+  cloud:
+    config:
+      enabled: true
+  data:
+      mongodb:
+        port: 27017
+        database: advcatedb 
+        host: localhost
+  zipkin:
+    base-url: http://localhost:9411      
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    
+management:
+   endpoints:
+    web: 
+     exposure:
+       include: "*"
+   health:
+    circuitbreakers:
+      enabled: true 
+   endpoint:
+    health:
+      show-details: always
+      
+resilience4j:
+  circuitbreaker:
+    instances:
+      AUTHORIZATION-CIRCUIT-BREAKER: 
+       register-health-indicator: true
+       automatic-transition-from-open-to-half-open-enabled: true
+       failure-rate-threshold: 50
+       minimum-number-of-calls: 5
+       permitted-number-of-calls-in-half-open-state: 3
+       wait-duration-in-open-state: 10s
